@@ -1,7 +1,7 @@
-#DumbledORM
+# DumbledORM
 A PHP Novelty ORM
 
-##Requirements:
+## Requirements:
 * PHP 5.3+
 * All tables must have a single (not composite) primary key called `id` that is an auto-incrementing integer
 * All foreign keys must follow the convention of `table_name_id`
@@ -12,7 +12,7 @@ A PHP Novelty ORM
  * have a column called `val`
 
 
-##Setup:
+## Setup:
 
 1. Download/clone DumbledORM
 2. Ensure that your config.php has the correct host, user, pass, etc.
@@ -25,7 +25,7 @@ A PHP Novelty ORM
 
 That's it.  There's an autoloader built in for the generated classes.
 
-###Database configuration
+### Database configuration
 
 The PHP Data objects or PDO extension is used to access mysql and the configuration file `config.php` is home for class
 DbConfig the source where DumbledORM finds your database settings.
@@ -46,7 +46,7 @@ NOTE: On rare occations mysql will not resolve localhost and PDO will attempt to
 if this fails you will likely find a PDOException complaining that there is "No such file or directory".
 By changing localhost to the ip 127.0.0.1 instead mysql will be able to resolve the host and a connection can be established.
 
-###CLI Script generate.php
+### CLI Script generate.php
 
 DumbledORM includes a PHP script to generate your database schema model classes.
 
@@ -65,7 +65,7 @@ At the command line type ```./generate.php -h``` for usage
 ```
 
 
-###Builder configuration
+### Builder configuration
 
 To generate the model programatically:
 
@@ -83,15 +83,15 @@ If you want to put the generated classes in a different directory than the defau
 
 	Builder::generateBase(null,'mymodeldir/model');
 
-###Testing
+### Testing
 
 DumbledORM includes a simple test script.  You can run it from the command line.  Just modify the DbConfig in the test script to your params.
 
 	php test.php
 
-##Usage
+## Usage
 
-####Create a new record
+#### Create a new record
 	$user = new User(array(
 	  'name' => 'Jason', 
 	  'email' => 'jasonmoo@me.com', 
@@ -99,54 +99,54 @@ DumbledORM includes a simple test script.  You can run it from the command line.
 	));
 	$user->save();
 
-####Load an existing record and modify it
+#### Load an existing record and modify it
 	$user = new User(13);  // load record with id 13
 	$user->setName('Jason')->save();
 
-####Find a single record and delete it
+#### Find a single record and delete it
 	User::one(array('name' => 'Jason'))->delete();
 
-####Find all records matching both fields and delete them all 
+#### Find all records matching both fields and delete them all 
 	User::find(array('name' => 'Jason','job' => 'PHP Dev'))->delete();
 
-####Find all records matching a query and modify them
+#### Find all records matching a query and modify them
     // applies setLocation and save to the entire set
     PhoneNumber::select('`number` like "607%"')
       ->setLocation('Ithaca, NY')
       ->setType(null)  // sets field to SQL NULL
       ->save();
 
-####Find all records matching a query and access a single record by id
+#### Find all records matching a query and access a single record by id
 	$users = User::select('`name` like ?',$val);
 	echo $users[13]->getId(); // 13
 
-####Find all records matching a query and iterate over them
+#### Find all records matching a query and iterate over them
 	foreach (User::select('`name` like ? and `job` IS NOT NULL order by `name`',$val) as $id => $user) {
 	  echo $user->getName().": $id\n";  // Jason: 13
 	}
 
-####Create a related record
+#### Create a related record
 	$user->create(new PhoneNumber(array(
 	  'type' => 'home', 
 	  'number' => '607-333-2840', 
 	)))->save();
 
-####Fetch a related record and modify it
+#### Fetch a related record and modify it
 	// fetches a single record only
 	$user->getPhoneNumber()->setType('work')->save();
 
-####Fetch all related records and iterate over them.	
+#### Fetch all related records and iterate over them.	
 	// boolean true causes all related records to be fetched
 	foreach ($user->getPhoneNumber(true) as $ph) {
 	  echo $ph->getType().': '.$ph->getNumber();
 	}
 
-####Fetch all related records matching a query and modify them
+#### Fetch all related records matching a query and modify them
 	$user->getPhoneNumber('`type` = ?',$type)
 	  ->setType($new_type)
 	  ->save()
 
-####Set/Get metadata for a record
+#### Set/Get metadata for a record
 	// set a batch
 	$user->addMeta(array(
 	  'background' => 'blue', 
